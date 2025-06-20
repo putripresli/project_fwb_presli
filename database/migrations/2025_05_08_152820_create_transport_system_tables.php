@@ -12,21 +12,7 @@ class CreateTransportSystemTables extends Migration
      * @return void
      */
     public function up()
-    {
-        // ========================================
-        // 1. TABEL USERS
-        // ========================================
-        Schema::create('user', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->string('phone')->nullable();
-            $table->text('address')->nullable();
-            $table->timestamps();
-        });
-
-        // ========================================
+    { 
         // 2. TABEL DRIVERS
         // ========================================
         Schema::create('drivers', function (Blueprint $table) {
@@ -61,7 +47,7 @@ class CreateTransportSystemTables extends Migration
         // ========================================
         Schema::create('rentals', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('user')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('vehicle_id')->constrained('vehicles')->onDelete('cascade');
             $table->date('start_date');
             $table->date('end_date');
@@ -87,9 +73,9 @@ class CreateTransportSystemTables extends Migration
         // ========================================
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sender_id')->constrained('user')->onDelete('cascade');
+            $table->foreignId('sender_id')->constrained('users')->onDelete('cascade');
             $table->enum('sender_role', ['user', 'driver', 'admin']);
-            $table->foreignId('receiver_id')->constrained('user')->onDelete('cascade');
+            $table->foreignId('receiver_id')->constrained('users')->onDelete('cascade');
             $table->enum('receiver_role', ['user', 'driver', 'admin']);
             $table->text('message');
             $table->timestamp('sent_at')->useCurrent();
@@ -111,11 +97,11 @@ class CreateTransportSystemTables extends Migration
     public function down()
     {
         // Drop tables in reverse order to maintain integrity
-        Schema::dropIfExists('messages');
-        Schema::dropIfExists('payments');
-        Schema::dropIfExists('rentals');
-        Schema::dropIfExists('vehicles');
+        Schema::dropIfExists('users');
         Schema::dropIfExists('drivers');
-        Schema::dropIfExists('user');
+        Schema::dropIfExists('vehicles');
+        Schema::dropIfExists('rentals');
+        Schema::dropIfExists('payments');
+        // Schema::dropIfExists('messages');
     }
 }
